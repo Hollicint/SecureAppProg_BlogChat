@@ -9,7 +9,23 @@
 
 
     
-         <h3>My blog entries...</h3>
+         <h3>My blog entries...</h3><br>
+            
+         
+  
+   
+        <!--Form for Blog that will connect to db-->
+        <form action="/blog" method="post">
+            <label for="">Post Title</label>
+            <input type="text" name="title" placeholder="Post Title"required><br>
+            <label for="">Description</label><br>   
+            <textarea name="description" id="Description"></textarea> <br>
+            <label for="">Username</label>
+            <input type="text" name="username" placeholder="Username"required> <br>
+            <button type="submit">Submit</button>
+
+        </form>
+
          
      <!--FOOTER-->
     <%- include ("./partials/footer.ejs") %>
