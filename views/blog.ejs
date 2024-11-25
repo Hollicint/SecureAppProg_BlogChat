@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include ("./partials/head.ejs") %>
+
+    <body>
+        <h1>Blog</h1>
+
+        <%- include ("./partials/nav.ejs") %> <br>
+
+
+    <!--Form for Blog that will connect to db-->
+    <form action="/blog" method="POST">
+
+        <label for="blogTitle">Post Title</label>
+        <input type="text" name="title" placeholder="Post Title" required><br>
+        <label for="">Description</label><br><br>
+        <textarea name="description" id="Description"></textarea> <br><br>
+        <label for="">Username</label>
+        <input type="text" name="username" placeholder="Username" required> <br><br>
+        <button type="submit">Submit</button>
+
+    </form>
+
+                <!-- Display existing blog posts -->
+    <ul>
+        <% posts.forEach(post => { %>
+            <li>
+                <h4><%= post.title %></h4>
+                <h4><%= post.description %></h4>
+                <h4><%= post.username %></h4>
+                <small><%= new Date(post.created_at).toLocaleString() %></small>
+            </li>
+        <% }); %>
+    </ul>
+
+
+            <%- include ("./partials/footer.ejs") %>
+    </body>
+
+</html>

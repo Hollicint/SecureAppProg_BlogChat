@@ -1,0 +1,25 @@
+body {
+    background-color:azure;
+}
+
+.container::after {
+    content: "";
+    clear: both;
+    display: table;
+
+}
+.col {
+   
+    text-align: center;
+    
+}
+
+h1 {
+    text-align: center;
+    font-size: 40px;
+}
+nav, h3,footer,p
+{
+    font-size: 30px;
+    text-align: center;
+}
