@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--Header -->
+<%- include ("./partials/head.ejs") %>
+
+    <body>
+
+        <h1>Blog Chat Login</h1>
+
+        <!--nav bar-->
+        <div id="navbar">
+            <%- include ("./partials/nav_reg.ejs") %> <br>
+        </div>   
+        
+        <div class="loginForm">
+            <p>  If you dont have an account please Register, link is up in the Navbar above ↑</p>
+
+            <form action="login" method="post">
+                <!--User and Password that will be checked if exists-->
+                <label for="username">Username</label><br>
+                <input type="text" name="username" required> <br>
+                <label for="password">Password</label><br>
+                <input type="password" name="password" required> <br> <br>
+
+               
+                <!--Submit button-->
+                <button type="submit">Enter </button>
+                <!-- Register location that will connect to DB -->
+                <a href="/regNewUser" id="regButton">Register</a>
+                <!--a href="/forgottenpass"> | Forgotten Password</a-->
+                
+            </form>
+
+          
+  
+
+
+        </div>
+        <div id="rightside">
+            <img src="images/loginpeops.png" alt="loginpeops" id="loginimage"> <!--https://stock.adobe.com/il/search?k=people%20in%20squares-->
+
+        </div>
+        
+
+            <!--Footer-->
+         <div id="footer">
+         <%- include ("./partials/footer.ejs") %>
+        </div>
+    </body>
+
+</html>

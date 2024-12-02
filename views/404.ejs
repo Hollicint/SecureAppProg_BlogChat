@@ -1,17 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-
+    <!--head-->
 <%- include ("./partials/head.ejs") %>
 
 <body>
-    404
+    <h1>Blog Chat  404</h1>
 
-    <%- include ("./partials/nav.ejs") %>
+     <!--nav bar-->
+     <div id="navbar">
+         <%- include ("./partials/nav.ejs") %> <br>
+    </div>   
 
-    <% var sMessage="Hello there from EJS" %>
-    <%= sMessage %>
+    <div class="oopage">
 
-    <%- include ("./partials/footer.ejs") %>
+
+    <h2>Oooops this page means you have hit an Error.</h2>
+    <h3>Please check your URl and inputs again</h3><br>
+
+    <img src="images/404page.png" alt="oopsImage" id="oopsImage"> <!--https://www.redbubble.com/i/sticker/Meowtivation-not-Found-by-TaylorRoss1/77723534.EJUG5-->
+
+    </div>
+
+    
+     <!--Footer-->
+     <div id="footer">
+         <%- include ("./partials/footer.ejs") %>
+    </div>
 </body>
 
 </html>

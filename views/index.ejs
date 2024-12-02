@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<!--Header -->
 <%- include ("./partials/head.ejs") %>
 
     <body>
         <h1>Blog Chat Home</h1>
 
-        <%- include ("./partials/nav.ejs") %>
+         <!--nav bar-->
+         <div id="navbar">
+             <%- include ("./partials/nav.ejs") %> <br>
+        </div>   
 
             <div class="paraText">
                 <h3>Welcome to Blog Chat, the best place to have your say without worrying about what others think.</h3>
                 <br>
                 <div class="container">
-                    <div class="col">
+                    <div class="colIndex">
                         <img src="images/indexPage.png" alt="indexPage">
                         <!--https://www.istockphoto.com/photo/shocking-offer-black-girl-sharing-secret-with-her-dazed-boyfriend-gm1257704295-368675851?utm_campaign=srp_portrait_v2_photos_40&utm_content=https%3A%2F%2Fwww.pexels.com%2Fsearch%2Fwhisper%2F&utm_medium=affiliate&utm_source=pexels&utm_term=whisper-->
                         <!--https://www.pexels.com/photo/multiethnic-friends-gossiping-behind-attentive-classmate-6147139/-->
@@ -36,8 +40,10 @@
 
 
             </div>
-
+           <!--Footer-->
+           <div id="footer">
             <%- include ("./partials/footer.ejs") %>
+           </div>
     </body>
 
 </html>

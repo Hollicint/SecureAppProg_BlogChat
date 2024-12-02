@@ -1,41 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 
+    <!--head-->
 <%- include ("./partials/head.ejs") %>
 
     <body>
-        <h1>Blog</h1>
 
-        <%- include ("./partials/nav.ejs") %> <br>
+        <h1>Blog Chat Blog</h1>
+        
+         <!--nav bar-->
+        <div id="navbar">
+            <%- include ("./partials/nav.ejs") %> <br>
+        </div>   
 
+            <br>
+            <!--Form for Blog that will connect to db-->
+            <form action="/blog" method="POST">
+                <div class="blogForm">
+                    <label for="blogTitle">Post Title</label>
+                    <input type="text" name="title" placeholder="Post Title" required><br><br>
+                    <label for="">Description</label>
+                    <textarea name="description" id="Description"></textarea> <br><br>
+                    <label for="">Username</label>
+                    <input type="text" name="username" placeholder="Username" required> <br><br>
+                    <button id="blogButton" type="submit">Submit</button>
+                </div>
+            </form>
 
-    <!--Form for Blog that will connect to db-->
-    <form action="/blog" method="POST">
+            <!-- Display existing blog posts -->
+            <div class="blogForm">
+                <ul>
+                    <% posts.forEach(post=> { %>
+                        <li>
+                            <h4>
+                                <%= post.title %>
+                            </h4>
+                            <h4>
+                                <%= post.description %>
+                            </h4>
+                            <h4>
+                                <%= post.username %>
+                            </h4>
+                            <small>
+                                <%= new Date(post.created_at).toLocaleString() %>
+                            </small>
 
-        <label for="blogTitle">Post Title</label>
-        <input type="text" name="title" placeholder="Post Title" required><br>
-        <label for="">Description</label><br><br>
-        <textarea name="description" id="Description"></textarea> <br><br>
-        <label for="">Username</label>
-        <input type="text" name="username" placeholder="Username" required> <br><br>
-        <button type="submit">Submit</button>
-
-    </form>
-
-                <!-- Display existing blog posts -->
-    <ul>
-        <% posts.forEach(post => { %>
-            <li>
-                <h4><%= post.title %></h4>
-                <h4><%= post.description %></h4>
-                <h4><%= post.username %></h4>
-                <small><%= new Date(post.created_at).toLocaleString() %></small>
-            </li>
-        <% }); %>
-    </ul>
-
-
-            <%- include ("./partials/footer.ejs") %>
+                        </li>
+                        <% }); %>
+                </ul>
+            </div>
+           <!--Footer-->
+         <div id="footer">
+         <%- include ("./partials/footer.ejs") %>
+        </div>
     </body>
 
 </html>
