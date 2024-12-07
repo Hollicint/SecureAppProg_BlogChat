@@ -18,10 +18,10 @@
 
             <form action="login" method="post">
                 <!--User and Password that will be checked if exists-->
-                <label for="username">Username</label><br>
-                <input type="text" name="username" required> <br>
-                <label for="password">Password</label><br>
-                <input type="password" name="password" required> <br> <br>
+                <label for="username">Username</label>
+                <input type="text" name="username" placeholder="Username" class="displayBox" required> <br>
+                <label for="password">Password</label>
+                <input type="password" name="password" placeholder="Password"  class="displayBox" required> <br> <br>
 
                
                 <!--Submit button-->
@@ -31,9 +31,11 @@
                 <!--a href="/forgottenpass"> | Forgotten Password</a-->
                 
             </form>
-
-          
-  
+            <% if(user) { %>
+                <form action="/logout" method="GET">
+                    <button type="submit">Logout</button>
+                </form>
+            <% } %>
 
 
         </div>

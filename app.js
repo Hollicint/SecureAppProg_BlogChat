@@ -5,6 +5,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
+//const { session } = require("inspector");
+const { request } = require("http");
+const session = require("express-session");
 
 //create the Express app
 const app = express();
@@ -15,6 +18,18 @@ app.listen(3000);
 //middleware to allow access to static files
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// session Configue
+// This is a secret key
+app.use(
+    session({
+        secret: "e1hmWcsUC7b6XYa6mzPE4jq2hqlEhLUqdxtj9RU43zc",
+        resave: false,
+        saveUninitialized: false,
+    })
+);
+
+
 
 // Connecting Sqlite database 
 const dbasePath = path.join(__dirname, 'database', 'app.db');
@@ -27,6 +42,15 @@ const dbase = new sqlite3.Database(dbasePath, (err) => {
     }
 });
 
+//Middleware to check Authentication
+function isAuthen(request, response, next) {
+    if (request.session.user) {
+        return next();
+    }
+    response.redirect("/login");
+}
+
+
 //route and response
 app.get("/", (request, response) => {
     response.render("index", { title: "Home" });
@@ -35,32 +59,32 @@ app.get("/", (request, response) => {
 
 
 dbase.serialize(() => {
-  /*  // Checking and dropping if table exists
-    dbase.run('DROP TABLE IF EXISTS blogChat', (err) => {
-        if (err) {
-            console.error("Error dropping table:", err.message);
-        } else {
-            console.log("Old blogChat table dropped (if it existed).");
-        }
-    });
-    // Checking and dropping if table exists
-    dbase.run('DROP TABLE IF EXISTS regUser', (err) => {
-        if (err) {
-            console.error("Error dropping table:", err.message);
-        } else {
-            console.log("Old regUser table dropped (if it existed).");
-        }
-    });
-    // Checking and dropping if table exists
-    dbase.run('DROP TABLE IF EXISTS userlogin', (err) => {
-        if (err) {
-            console.error("Error dropping table:", err.message);
-        } else {
-            console.log("Old userlogin table dropped (if it existed).");
-        }
-
-    });
-*/
+    /*  // Checking and dropping if table exists
+      dbase.run('DROP TABLE IF EXISTS blogChat', (err) => {
+          if (err) {
+              console.error("Error dropping table:", err.message);
+          } else {
+              console.log("Old blogChat table dropped (if it existed).");
+          }
+      });
+      // Checking and dropping if table exists
+      dbase.run('DROP TABLE IF EXISTS regUser', (err) => {
+          if (err) {
+              console.error("Error dropping table:", err.message);
+          } else {
+              console.log("Old regUser table dropped (if it existed).");
+          }
+      });
+      // Checking and dropping if table exists
+      dbase.run('DROP TABLE IF EXISTS userlogin', (err) => {
+          if (err) {
+              console.error("Error dropping table:", err.message);
+          } else {
+              console.log("Old userlogin table dropped (if it existed).");
+          }
+  
+      });
+  */
 
     // Creating table for blog
     dbase.run(`
@@ -111,12 +135,14 @@ app.get("/blog", (request, response) => {
             console.error(err.message);
             response.status(500).send('Internal Server Error');
         } else {
-            response.render("blog", { posts: rows, title: "Blog" });
+           // response.render("blog", { posts: rows, title: "Blog" });
+           response.render("blog", { posts: rows, user: request.session.user || null, title: "Blog" });
+
         }
     });
 });
 // Adds post to db table for blogs
-app.post('/blog', (request, response) => {
+app.post('/blog', isAuthen, (request, response) => {
     const { title, description, username } = request.body;
     const query = `INSERT INTO blogChat (title, description, username) VALUES ('${title}', '${description}', '${username}')`;
     dbase.run(query, (err) => {
@@ -141,41 +167,45 @@ app.post('/blog', (request, response) => {
 
 //Login
 app.get("/login", (request, response) => {
-    response.render("login", { title: "login" })
+    response.render("login", { title: "login", user: request.session.user || null })
 });
 
 // Post to manage new reg users going into DB
 app.post("/login", (request, response) => {
     const { username, password } = request.body;
-  
+
     //checking if the email or username already exists
     const checkCred = `SELECT * FROM regUser WHERE username = ? OR password = ?`;
     dbase.get(checkCred, [username, password], (err, row) => {
-       //if (err) {
-       //    console.error("Checking if user already on system ", err.message);
-       //    return response.status(500).send("error with server")
-       //}
-       //if (!row) {
-       //    return response.status(404).send("Credentals already on system")
-       //}
+        if (err) {
+            console.error("Login Error ", err.message);
+            return response.status(500).send("Internal Error with server")
+        }
+        //if (!row) {
+        //    return response.status(404).send("Credentals already on system")
+        //}
+        if (row) {
+            request.session.user = { username: row.username };
+            return response.redirect("/blog");
+        }
+        response.status(401).send("Invalid Credentials");
 
-            if (password== row.password) {
-                console.error("User has logged in ");
-                response.redirect('/blog');
-            } else {
-                //once created goes to login page
-                return response.status(404).send("not found")
-            }
-           // response.redirect("/login");
-        });
+        if (password == row.password) {
+            console.error("User has logged in ");
+            response.redirect('/blog');
+        } else {
+            //once created goes to login page
+            return response.status(404).send("not found")
+        }
+        // response.redirect("/login");
+    });
 });
 
-
-
-
-
-
-
+app.get("/logout", (request, response) => {
+    request.session.destroy(()=>{
+        response.redirect("/login");
+    });
+});
 
 
 
@@ -187,7 +217,7 @@ app.get("/regNewUser", (request, response) => {
 // Post to manage new reg users going into DB
 app.post("/regNewUser", (request, response) => {
     const { fName, lName, email, username, password } = request.body;
-  
+
     //checking if the email or username already exists
     const checkCred = `SELECT * FROM regUser WHERE email = ? OR username = ?`;
     dbase.get(checkCred, [email, username], (err, row) => {
@@ -208,7 +238,7 @@ app.post("/regNewUser", (request, response) => {
                 //once created goes to login page
                 response.redirect('/login');
             }
-           // response.redirect("/login");
+            // response.redirect("/login");
         });
     });
 });

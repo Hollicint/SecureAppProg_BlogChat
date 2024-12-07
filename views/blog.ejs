@@ -24,6 +24,7 @@
                     <label for="">Username</label>
                     <input type="text" name="username" placeholder="Username" required> <br><br>
                     <button id="blogButton" type="submit">Submit</button>
+                    <!--button type="submit">Logout</button-->
                 </div>
             </form>
 
@@ -33,7 +34,7 @@
                     <% posts.forEach(post=> { %>
                         <li>
                             <h4>
-                                <%= post.title %>
+                                <%= post.title  %>
                             </h4>
                             <h4>
                                 <%= post.description %>

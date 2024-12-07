@@ -24,20 +24,35 @@ nav, h3,footer,p, h2
     text-align: center;
 }
 
+#displayBox
+{
+    font-size: 50px;
+}
+
+
 .newUserForm
 {
     text-align: center;
-    font-size: 30px;
+    font-size: 60px;
     padding: 10px;
     border-radius: 10px;  
     margin: auto;
 }
-.blogForm , .loginForm
+.blogForm
 {
    
-    font-size: 40px;
+    font-size: 50px;
     float: left;
+   
 }
+ .loginForm
+{
+   
+    font-size: 50px;
+    float: left;
+    text-align: center;
+}
+
 
 #regButton , input , button
 {
