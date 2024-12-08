@@ -1,6 +1,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog Chat | <%= title %></title>
+    <title>Blog Chat | <%= title %>
+    </title>
+
+  
+
+    <meta http-equiv="Content-Security-Policy" 
+        content="
+            default-src 'self' 
+            script-src 'strict-dynamic' 'nonce-rAnd0m123';
+            object-src 'none';
+            require-trusted-types-for 'script';
+            img-src 'self';
+        ">
+    <!--Style Sheet-->
     <link rel="stylesheet" href="css/style.css">
 </head>
+
+
+  <!--Adding Content Security Policy
+        - default-src return resources from same origin
+        - script-src Controls loading and starting of Javascript
+        - strict-dynamic' - actively loads trusted scripts
+        - 'nonce-rAnd0m123' - only nonce scripts can be applied
+        -  object-src 'none'; - no types of plugins or flash objects are allowed to run
+        -  require-trusted-types-for 'script'; - security feature to prevent XSS attacks
+        - img-src 'self'securing images from same origin
+    -->
