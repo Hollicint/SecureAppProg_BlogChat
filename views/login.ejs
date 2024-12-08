@@ -14,7 +14,14 @@
         </div>   
         
         <div class="loginForm">
-            <p>  If you dont have an account please Register, link is up in the Navbar above ↑</p>
+            <p>  If you dont have an account please Register, link is up in the Navbar above ↑ <br>
+                Or Login below to gain access to Create a Blog Chat Post
+            </p>
+            <% if (errorMessage) { %>
+                <div class="error-message" style="color: red; font-weight: bold;">
+                    <%= errorMessage %>
+                </div>
+            <% } %> 
 
             <form action="login" method="post">
                 <!--User and Password that will be checked if exists-->
@@ -24,21 +31,27 @@
                 <input type="password" name="password" placeholder="Password"  class="displayBox" required> <br> <br>
 
                
+               
                 <!--Submit button-->
                 <button type="submit">Enter </button>
                 <!-- Register location that will connect to DB -->
                 <a href="/regNewUser" id="regButton">Register</a>
                 <!--a href="/forgottenpass"> | Forgotten Password</a-->
-                
+
+    
             </form>
-            <% if(user) { %>
+            <% if (user) { %>
                 <form action="/logout" method="GET">
                     <button type="submit">Logout</button>
                 </form>
             <% } %>
+                    
+            
 
-
+            <p>Remember to Logout once finish, this option will appear once you have login</p>
         </div>
+            
+
         <div id="rightside">
             <img src="images/loginpeops.png" alt="loginpeops" id="loginimage"> <!--https://stock.adobe.com/il/search?k=people%20in%20squares-->
 
