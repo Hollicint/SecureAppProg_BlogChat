@@ -26,6 +26,13 @@
                     <input type="text" name="username" placeholder="Username" required> <br>
                     <label for="password">Password</label>
                     <input type="password" name="password" placeholder="Password" required> <br>
+                    
+                    <% if(typeof errorMessage !== 'undefined'){%>
+                        <div>
+                            <%= errorMessage %>
+                        </div>
+                    <% } %>
+
                     <!--Submit button-->
                     <button id="regButton" type="submit">Register Submit</button>
 
