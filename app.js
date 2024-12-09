@@ -33,13 +33,13 @@ require('dotenv').config();
 
 app.use(
     session({
-        //secret: "e1hmWcsUC7b6XYa6mzPE4jq2hqlEhLUqdxtj9RU43zc", //session cookies
-       // securing the password as its expose if hardcoded moved to its own file .env
-        secret: process.env.session_secret,
+        secret: "e1hmWcsUC7b6XYa6mzPE4jq2hqlEhLUqdxtj9RU43zc", //session cookies
+        // securing the password as its expose if hardcoded moved to its own file .env
+        // secret: process.env.session_secret,
         resave: false, // prevents uncecessary session saving
         saveUninitialized: false, // no empty sessions
         //securing cookies
-        cookie:{
+        cookie: {
             httpOnly: true, //prevenets XSS using JS in the browser
             secure: process.env.NODE_ENV === 'production', // cookies sent over HTTPS
             sameSite: 'strict', //allows only request and trusted sites cookies
@@ -64,11 +64,11 @@ const dbase = new sqlite3.Database(dbasePath, (err) => {
 });
 
 //Sets the limit tries to enter login
-const limitLogin = rateLimit({
-    windowMs: 1 * 60 * 1000, //recover time before attempt again
-    max: 3, // min attempts to try
-    message:"Your login attempts are up" // error message
-});
+//const limitLogin = rateLimit({
+//    windowMs: 1 * 60 * 1000, //recover time before attempt again
+//    max: 3, // min attempts to try
+//    message:"Your login attempts are up" // error message
+//});
 
 
 //Middleware to check Authentication
@@ -88,32 +88,6 @@ app.get("/", (request, response) => {
 
 
 dbase.serialize(() => {
-    /*  // Checking and dropping if table exists and dropping
-      dbase.run('DROP TABLE IF EXISTS blogChat', (err) => {
-          if (err) {
-              console.error("Error dropping table:", err.message);
-          } else {
-              console.log("Old blogChat table dropped (if it existed).");
-          }
-      });
-      // Checking and dropping if table exists
-      dbase.run('DROP TABLE IF EXISTS regUser', (err) => {
-          if (err) {
-              console.error("Error dropping table:", err.message);
-          } else {
-              console.log("Old regUser table dropped (if it existed).");
-          }
-      });
-      // Checking and dropping if table exists
-      dbase.run('DROP TABLE IF EXISTS userlogin', (err) => {
-          if (err) {
-              console.error("Error dropping table:", err.message);
-          } else {
-              console.log("Old userlogin table dropped (if it existed).");
-          }
-  
-      });
-  */
 
     // Creating table for blog
     dbase.run(`
@@ -149,39 +123,33 @@ dbase.serialize(() => {
         )`
     )
 
-    //, (err) => {
-    //    if (err) {
-    //        console.error("Error creating table:", err.message);
-    //    } else {
-    //        console.log("Table blogChat created (or already exists).");
-    //    }
-    //});
 });
 // Gets and displays the blog post
 app.get("/blog", (request, response) => {
     dbase.all('SELECT * FROM blogChat ORDER BY created_at DESC', [], (err, rows) => {
         if (err) {
             console.error(err.message);
-            response.status(500).send('Internal Server Error');
+            response.status(500).send('Error with inputted text');
         } else {
-            // response.render("blog", { posts: rows, title: "Blog" });
-            response.render("blog", {
-                 posts: rows,
-                  user: request.session.user || null, 
-                  title: "Blog" });
-
+             response.render("blog", { posts: rows, title: "Blog" });
+           // response.render("blog", {
+           //     posts: rows,
+           //     user: request.session.user || null,
+           //     title: "Blog"
+           // });
+//
         }
     });
 });
 // Adds post to db table for blogs
 app.post('/blog', isAuthen, (request, response) => {
     const { title, description, username } = request.body;
-   // const query = `INSERT INTO blogChat (title, description, username) VALUES ('${title}', '${description}', '${username}')`;
-    //? helps treat it as data and not SQL executable 
-   const query = `INSERT INTO blogChat (title, description, username) VALUES (?,?,?)`;
+    const query = `INSERT INTO blogChat (title, description, username) VALUES ('${title}', '${description}', '${username}')`;
+    //removing ? helps treat it as data and not SQL executable 
+    // const query = `INSERT INTO blogChat (title, description, username) VALUES (?,?,?)`;
     //runnign query - securing the input
-  // dbase.run(query, (err) => {
-    dbase.run(query,[title, description, username], (err) => {
+    // dbase.run(query, (err) => {
+    dbase.run(query, (err) => {
         if (err) {
             console.error(err.message);
             response.status(500).send('Internal Server Error');
@@ -204,74 +172,42 @@ app.post('/blog', isAuthen, (request, response) => {
 //Login
 app.get("/login", (request, response) => {
     response.render("login", {
-         title: "login", 
-         user: request.session.user || null,
-         errorMessage: "Login credentails incorrect"
+        title: "login",
+        user: request.session.user || null,
+        errorMessage: "Login credentails incorrect"
     });
 });
 
 // Post to manage new reg users going into DB
-// limitLogin makes ure the limit attempts are given to the login page
-app.post("/login", limitLogin,(request, response) => {
+// removing limitLogin makes ure the limit attempts are given to the login page
+//app.post("/login", limitLogin,(request, response) => {
+app.post("/login", (request, response) => {
     const { username, password } = request.body;
+    const checkCred = `SELECT * FROM regUser WHERE username = '${username}'`;
 
-    //checking if the email or username already exists
-    //const checkCred = `SELECT * FROM regUser WHERE username = ? OR password = ?`;
-    //now only checks the hashed password
-    const checkCred = `SELECT * FROM regUser WHERE username = ?`;
-    //dbase.get(checkCred, [username, password], (err, row) => {
-    dbase.get(checkCred, [username], (err, row) => {
+    dbase.get(checkCred, [], (err, row) => {
         if (err) {
             console.error("Login Error ", err.message);
             return response.status(500).send("Internal Error with server")
         }
         if (!row) {
-           // return response.status(404).send("Credentals already on system")
-           return response.render("login",{
+            // return response.status(404).send("Credentals already on system")
+            return response.render("login", {
                 title: "Login",
-                errorMessage:"Username not found "
-           });
+                errorMessage: "Username not found "
+            });
         }
-        // if (row) {
-        //     request.session.user = { username: row.username };
-        //     return response.redirect("/blog");
-        // }
-        // response.status(401).send("Invalid Credentials");//
-
-        // if (password == row.password) {
-        //     console.error("User has logged in ");
-        //     response.redirect('/blog');
-        // } else {
-        //     //once created goes to login page
-        //     return response.status(404).send("not found")
-        // }
-        // // response.redirect("/login");
-
-     // Compare the plain password entered by the user with the hashed password stored in the database
-
-        bcrypt.compare(password, row.password, (err, isMatch) => {
-            if (err) {
-                console.error("Password incorrect", err.message);
-                //return response.status(500).send("Password incorrect");
-                return response.render("login",{
-                    //reduce data being exposed with more simple terms 
-                    title: "Login", 
-                    errorMessage: "Error with password  , please try again"
-                });
-            }
-            if (isMatch) {
-                request.session.user = { username: row.username };
-                return response.redirect("/blog");
-            } else {
-                //return response.status(401).send("Password Invalid");
-                return response.render("login",{
-                    //reduce data being exposed with more simple terms 
-                    title: "Login", 
-                    errorMessage: "Error with password,  please try again"
-                });
-
-            }
-        });
+        if(password === row.password){
+            request.session.user ={
+                username:row.username
+            };
+            return response.redirect("/blog");
+        }else{
+            return response.render("login",{
+                title: "Login",
+                errorMessage:"Password error try again"
+            });
+        }
     });
 });
 
@@ -291,73 +227,20 @@ app.get("/regNewUser", (request, response) => {
 // Post to manage new reg users going into DB
 app.post("/regNewUser", (request, response) => {
     const { fName, lName, email, username, password } = request.body;
-
-    // Check Email is entered correctly
-    const emailFormat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    if(!emailFormat.test(email)){
-       // return response.status(400).send("Incorrect email format");
-       return response.render("regNewUser",{
-            title: "Register",
-            errorMessage: "Incorrect email format"
-       });
-    }
-
-    //Check Username is enterd correctly
-    if(username.length < 6){
-        //return response.status(400).send("Incorrect username format");
-        return response.render("regNewUser",{
-            title: "Register",
-            errorMessage: "Incorrect username format"
-       });
-    }
-
-    //Check password is entered correctly
-
-    if(password.length < 8 || password.length > 14 ){
-       // return response.status(400).send("Incorrect password length must be between 8 to 14 ");
-        return response.render("regNewUser",{
-            title: "Register",
-            errorMessage: "Incorrect password length must be between 8 to 14"
-       });
-    }
-
-    //checking if the email or username already exists
-    const checkCred = `SELECT * FROM regUser WHERE email = ? OR username = ?`;
-    dbase.get(checkCred, [email, username], (err, row) => {
+    //insert new user into database
+    const insertQuery = `INSERT INTO regUser(fName, lName, email, username, password) VALUES ('${fName}', '${lName}', '${email}','${username}','${password}')`;
+    dbase.run(insertQuery, (err) => {
         if (err) {
-            console.error("Error User exists ", err.message);
-            return response.status(500).send("Error User details being checked")
+            console.error("Error with New User", err.message);
+            response.status(500).send('Error with Internal Server');
+        } else {
+            //once created goes to login page
+            response.redirect('/login');
         }
-        if (row) {
-            //return response.status(404).send("Credentals already exists")
-            return response.render("regNewUser",{
-                title: "Register",
-                errorMessage: "Credentals already exists"
-           });
-        }
-
-        // bcrypt -  the password is being encrypt here to be saved in the DB
-        bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
-            if (err) {
-                console.error("Hashing password error", err.message);
-                return response.status(500).send("Hashing password error");
-            }
-            // })
-
-            //insert new user into database
-            const insertQuery = `INSERT INTO regUser(fName, lName, email, username, password) VALUES (?, ?, ?, ?, ?)`;
-            dbase.run(insertQuery, [fName, lName, email, username, hashedPassword], (err) => {
-                if (err) {
-                    console.error("Error with New User",err.message);
-                    response.status(500).send('Error with Internal Server');
-                } else {
-                    //once created goes to login page
-                    response.redirect('/login');
-                }
-                // response.redirect("/login");
-            });
-        });
+        // response.redirect("/login");
     });
+
+
 });
 
 

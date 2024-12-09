@@ -4,22 +4,13 @@
     <title>Blog Chat | <%= title %>
     </title>
 
-  
-
-    <meta http-equiv="Content-Security-Policy" 
-        content="
-            default-src 'self' 
-            script-src 'strict-dynamic' 'nonce-rAnd0m123';
-            object-src 'none';
-            require-trusted-types-for 'script';
-            img-src 'self';
-        ">
+    <meta http-equiv="Content-Security-Policy"  content="default-src 'self'">
     <!--Style Sheet-->
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 
-  <!--Adding Content Security Policy
+  <!--Removing Content Security Policy
         - default-src return resources from same origin
         - script-src Controls loading and starting of Javascript
         - strict-dynamic' - actively loads trusted scripts
