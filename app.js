@@ -39,11 +39,11 @@ app.use(
         resave: false, // prevents uncecessary session saving
         saveUninitialized: false, // no empty sessions
         //securing cookies
-        cookie: {
-            httpOnly: true, //prevenets XSS using JS in the browser
-            secure: process.env.NODE_ENV === 'production', // cookies sent over HTTPS
-            sameSite: 'strict', //allows only request and trusted sites cookies
-        },
+       // cookie: {
+       //     httpOnly: true, //prevenets XSS using JS in the browser
+       //     secure: process.env.NODE_ENV === 'production', // cookies sent over HTTPS
+       //     sameSite: 'strict', //allows only request and trusted sites cookies
+       // },
         //resetting session after 1 min if the site isnt touched it will make user sign back in
         rolling: true, // reset
         maxAge: 60000, // 1 min of none active it will reset
