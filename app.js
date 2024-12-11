@@ -10,12 +10,12 @@ const { request } = require("http");
 const session = require("express-session");
 //inserting limit attempts for login
 const rateLimit = require('express-rate-limit');
-//imports bcrypt for hashing
-const bcrypt = require('bcrypt');
-const { isMatch } = require("lodash");
-const { title } = require("process");
-//sets level of hashing
-const saltRounds = 12;
+////imports bcrypt for hashing
+//const bcrypt = require('bcrypt');
+//const { isMatch } = require("lodash");
+//const { title } = require("process");
+////sets level of hashing
+//const saltRounds = 12;
 
 //create the Express instance
 const app = express();
