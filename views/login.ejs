@@ -17,11 +17,7 @@
             <p>  If you dont have an account please Register, link is up in the Navbar above ↑ <br>
                 Or Login below to gain access to Create a Blog Chat Post
             </p>
-            <% if (errorMessage) { %>
-                <div class="error-message" style="color: red; font-weight: bold;">
-                    <%= errorMessage %>
-                </div>
-            <% } %> 
+           
 
             <form action="login" method="post">
                 <!--User and Password that will be checked if exists-->
@@ -38,15 +34,21 @@
                 <a href="/regNewUser" id="regButton">Register</a>
                 <!--a href="/forgottenpass"> | Forgotten Password</a-->
 
-    
             </form>
+        
             <% if (user) { %>
                 <form action="/logout" method="GET">
                     <button type="submit">Logout</button>
                 </form>
             <% } %>
                     
-            
+
+            <% if (errorMessage) { %>
+                <div class="error-message">
+                    <%= errorMessage %>
+                </div>
+            <% } %> 
+                
 
             <p>Remember to Logout once finish, this option will appear once you have login</p>
         </div>

@@ -206,7 +206,8 @@ app.get("/login", (request, response) => {
     response.render("login", {
          title: "login", 
          user: request.session.user || null,
-         errorMessage: "Login credentails incorrect"
+         errorMessage: null //"Login credentails incorrect"
+         
     });
 });
 
@@ -223,7 +224,10 @@ app.post("/login", limitLogin,(request, response) => {
     dbase.get(checkCred, [username], (err, row) => {
         if (err) {
             console.error("Login Error ", err.message);
-            return response.status(500).send("Internal Error with server")
+            return response.render("Login", {
+                title: "Login",
+                errorMessage: "Error with login details"
+            });
         }
         if (!row) {
            // return response.status(404).send("Credentals already on system")
@@ -256,7 +260,7 @@ app.post("/login", limitLogin,(request, response) => {
                 return response.render("login",{
                     //reduce data being exposed with more simple terms 
                     title: "Login", 
-                    errorMessage: "Error with password  , please try again"
+                    errorMessage: "Error with password, please try again"
                 });
             }
             if (isMatch) {
