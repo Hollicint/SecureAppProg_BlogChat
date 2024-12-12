@@ -174,18 +174,18 @@ app.get("/login", (request, response) => {
     response.render("login", {
         title: "login",
         user: request.session.user || null,
-        errorMessage: "Login credentails incorrect"
+        errorMessage: null//"Login credentails incorrect"
     });
 });
 
 // Post to manage new reg users going into DB
 // removing limitLogin makes ure the limit attempts are given to the login page
-//app.post("/login", limitLogin,(request, response) => {
+//app.post("/login", limitLogin,(request, response) => { (
 app.post("/login", (request, response) => {
     const { username, password } = request.body;
-    const checkCred = `SELECT * FROM regUser WHERE username = '${username}'`;
-
-    dbase.get(checkCred, [], (err, row) => {
+   // const checkCred = `SELECT * FROM regUser WHERE username = '${username}' AND password = '${password}'`;
+   const checkCred = `SELECT * FROM regUser WHERE username = ? AND password = ?`;
+    dbase.get(checkCred, [username,password], (err, row) => {
         if (err) {
             console.error("Login Error ", err.message);
             return response.status(500).send("Internal Error with server")
@@ -194,20 +194,17 @@ app.post("/login", (request, response) => {
             // return response.status(404).send("Credentals already on system")
             return response.render("login", {
                 title: "Login",
-                errorMessage: "Username not found "
+                errorMessage: "Username or password not found "
             });
         }
-        if(password === row.password){
-            request.session.user ={
-                username:row.username
-            };
+       // if(password === row.password){
+            request.session.user = {
+                username: row.username
+        //}
+         };
+           
+        
             return response.redirect("/blog");
-        }else{
-            return response.render("login",{
-                title: "Login",
-                errorMessage:"Password error try again"
-            });
-        }
     });
 });
 

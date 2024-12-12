@@ -11,56 +11,57 @@
         <!--nav bar-->
         <div id="navbar">
             <%- include ("./partials/nav_reg.ejs") %> <br>
-        </div>   
-        
+        </div>
+
         <div class="loginForm">
-            <p>  If you dont have an account please Register, link is up in the Navbar above ↑ <br>
+            <p> If you dont have an account please Register, link is up in the Navbar above ↑ <br>
                 Or Login below to gain access to Create a Blog Chat Post
             </p>
+
+            <% if (!user) { %>
+                <form action="/login" method="post">
+                    <!--User and Password that will be checked if exists-->
+                    <label for="username">Username</label>
+                    <input type="text" name="username" placeholder="Username" class="displayBox" required> <br>
+                    <label for="password">Password</label>
+                    <input type="password" name="password" placeholder="Password" class="displayBox" required> <br> <br>
+
+
+
+                    <!--Submit button-->
+                    <button type="submit">Enter </button>
+                    <!-- Register location that will connect to DB -->
+                    <a href="/regNewUser" id="regButton">Register</a>
+                    <!--a href="/forgottenpass"> | Forgotten Password</a-->
+
+                </form>
+          
+            <% } else { %>
+                    <form action="/logout" method="GET">
+                        <button type="submit">Logout</button>
+                    </form>
+            <% } %>
+
             <% if (errorMessage) { %>
-                <div class="error-message" style="color: red; font-weight: bold;">
+                <div class="error-message">
                     <%= errorMessage %>
                 </div>
-            <% } %> 
-
-            <form action="login" method="post">
-                <!--User and Password that will be checked if exists-->
-                <label for="username">Username</label>
-                <input type="text" name="username" placeholder="Username" class="displayBox" required> <br>
-                <label for="password">Password</label>
-                <input type="password" name="password" placeholder="Password"  class="displayBox" required> <br> <br>
-
-               
-               
-                <!--Submit button-->
-                <button type="submit">Enter </button>
-                <!-- Register location that will connect to DB -->
-                <a href="/regNewUser" id="regButton">Register</a>
-                <!--a href="/forgottenpass"> | Forgotten Password</a-->
-
-    
-            </form>
-            <% if (user) { %>
-                <form action="/logout" method="GET">
-                    <button type="submit">Logout</button>
-                </form>
             <% } %>
-                    
-            
-
-            <p>Remember to Logout once finish, this option will appear once you have login</p>
+                               
+             <p>Remember to Logout once finish, this option will appear once you have login</p>
         </div>
-            
+
 
         <div id="rightside">
-            <img src="images/loginpeops.png" alt="loginpeops" id="loginimage"> <!--https://stock.adobe.com/il/search?k=people%20in%20squares-->
+            <img src="images/loginpeops.png" alt="loginpeops" id="loginimage">
+            <!--https://stock.adobe.com/il/search?k=people%20in%20squares-->
 
         </div>
-        
 
-            <!--Footer-->
-         <div id="footer">
-         <%- include ("./partials/footer.ejs") %>
+
+        <!--Footer-->
+        <div id="footer">
+            <%- include ("./partials/footer.ejs") %>
         </div>
     </body>
 
