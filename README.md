@@ -17,6 +17,8 @@
 - Generic Error message notes <br>
 - Adding ? to const queries in app.js file to change it from accessible SQL query  -  VALUES (?,?,?)`;
 
+<h2>Testing with Playwright </h2>
+Please be directed to Issues tab there is a zip folder with the testing done for this project
 
 <h2>How to Install project</h2>
 Packages installed
